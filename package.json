@@ -1,0 +1,29 @@
+{
+  "name": "rtpoll-server",
+  "version": "1.0.0",
+  "description": "Server-side component for the realtime poll.",
+  "main": "server.js",
+  "dependencies": {
+    "socket.io": "^2.0.3",
+    "socketio": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kashisau/rtpoll-server.git"
+  },
+  "keywords": [
+    "realtime",
+    "socket",
+    "poll"
+  ],
+  "author": "Kashi Samaraweera <kashi@kashis.com.au>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kashisau/rtpoll-server/issues"
+  },
+  "homepage": "https://github.com/kashisau/rtpoll-server#readme"
+}
