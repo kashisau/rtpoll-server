@@ -5,12 +5,18 @@ const tickInterval = 200;
 const voteSocket = socket.of('/vote');
 const ballotSocket = socket.of('/ballot');
 
-const votes = [];
+// [(negative votes), (positive votes)]
+const votes = [0, 0];
 
+let votesTotal = 0;
+
+// Tally votes as they come in.
 voteSocket.on('connect', (rtPollClient) => {
     const clientId = rtPollClient.id;
     console.log(`Client connected: ${clientId}`);
-
+    
+    voteSocket.emit('voteAverage', (votes[1] - votes[0])/votesTotal);
+    
     rtPollClient.on('disconnecting', (reason) => {
         console.log("Client disconnecting: ", reason);
     });
@@ -25,13 +31,15 @@ voteSocket.on('connect', (rtPollClient) => {
         voteCount = Math.min(voteCount, 1);
         voteCount = Math.max(voteCount, -1);
 
-        votes.push(voteData);
-    });
-});
+        if (voteCount === -1) votes[0]++;
+        if (voteCount === 1) votes[1]++;
 
-setInterval(() => {
-    if ( ! voteSocket.connected) return;
-    voteSocket.emit('voteAverage', votes.reduce((cummulative, currentValue) => cummulative + currentValue, 0) / votes.length);
+        if (votes[0] === votes[1]) { votes[0] = 0; votes[1] = 0; }
+        
+        votesTotal++;
+
+        voteSocket.emit('voteAverage', (votes[1] - votes[0])/votesTotal);
+    });
 });
 
 ballotSocket.on('connect', (ballotClient) => {
