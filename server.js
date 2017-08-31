@@ -1,6 +1,7 @@
 const socket = require("socket.io")();
 const port = 8000;
 const tickInterval = 200;
+const randomcolor = require("randomcolor");
 
 const voteSocket = socket.of('/vote');
 const ballotSocket = socket.of('/ballot');
@@ -27,6 +28,7 @@ voteSocket.on('connect', (rtPollClient) => {
             client = {
                 id: clientId,
                 voterId: voterId,
+                colour: randomcolor({luminosity: "dark"}),
                 votes: 0,
                 positive: 0,
                 negative: 0,
@@ -37,7 +39,7 @@ voteSocket.on('connect', (rtPollClient) => {
             // Update the client ID
             client.id = clientId;
         }
-
+        rtPollClient.emit('color', client.colour);
         ballotSocket.emit('clientList', connectedClients);
         rtPollClient.on('castVote', (voteData) => {
             voteCount = parseInt(voteData, 10) || 0;
@@ -52,7 +54,7 @@ voteSocket.on('connect', (rtPollClient) => {
             if (voteCount === -1) votes[0]++;
             if (voteCount === 1) votes[1]++;
     
-            if (votes[0] === votes[1]) { votes[0] = 0; votes[1] = 0; }
+            // if (votes[0] === votes[1]) { votes[0] = 0; votes[1] = 0; }
             
             votesTotal++;
             
@@ -75,20 +77,6 @@ voteSocket.on('connect', (rtPollClient) => {
     });
 
 });
-
-/**
- * Creates a new client object.
- * @param {String} clientId The identifier for the client.
- */
-function createClient(clientId) {
-    return {
-        id: clientId,
-        votes: 0,
-        positive: 0,
-        negative: 0,
-        average: 0
-    }
-}
 
 ballotSocket.on('connect', (ballotClient) => {
     const clientId = ballotClient.id;

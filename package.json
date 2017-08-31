@@ -4,6 +4,7 @@
   "description": "Server-side component for the realtime poll.",
   "main": "server.js",
   "dependencies": {
+    "randomcolor": "^0.5.3",
     "socket.io": "^2.0.3",
     "socketio": "^1.0.0"
   },
